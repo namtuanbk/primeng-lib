@@ -4,7 +4,6 @@ import * as i1 from "@angular/common";
 import * as i2 from "primeng/ripple";
 export declare class ButtonDirective implements AfterViewInit, OnDestroy {
     el: ElementRef;
-    private platformId;
     iconPos: 'left' | 'right' | 'top' | 'bottom';
     loadingIcon: string;
     _label: string;
@@ -12,7 +11,7 @@ export declare class ButtonDirective implements AfterViewInit, OnDestroy {
     _loading: boolean;
     initialized: boolean;
     _initialStyleClass: string;
-    constructor(el: ElementRef, platformId: any);
+    constructor(el: ElementRef);
     ngAfterViewInit(): void;
     getStyleClass(): string;
     setStyleClass(): void;
