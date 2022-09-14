@@ -1,11 +1,12 @@
 import * as i0 from '@angular/core';
-import { EventEmitter, Component, ChangeDetectionStrategy, ViewEncapsulation, Input, Output, NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { EventEmitter, PLATFORM_ID, Component, ChangeDetectionStrategy, ViewEncapsulation, Inject, Input, Output, NgModule } from '@angular/core';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import Chart from 'chart.js/auto';
 
 class UIChart {
-    constructor(el) {
+    constructor(el, platformId) {
         this.el = el;
+        this.platformId = platformId;
         this.plugins = [];
         this.responsive = true;
         this.onDataSelect = new EventEmitter();
@@ -26,8 +27,10 @@ class UIChart {
         this.reinit();
     }
     ngAfterViewInit() {
-        this.initChart();
-        this.initialized = true;
+        if (isPlatformBrowser(this.platformId)) {
+            this.initChart();
+            this.initialized = true;
+        }
     }
     onCanvasClick(event) {
         if (this.chart) {
@@ -82,7 +85,7 @@ class UIChart {
         }
     }
 }
-UIChart.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.7", ngImport: i0, type: UIChart, deps: [{ token: i0.ElementRef }], target: i0.ɵɵFactoryTarget.Component });
+UIChart.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.7", ngImport: i0, type: UIChart, deps: [{ token: i0.ElementRef }, { token: PLATFORM_ID }], target: i0.ɵɵFactoryTarget.Component });
 UIChart.ɵcmp = i0.ɵɵngDeclareComponent({ minVersion: "14.0.0", version: "14.0.7", type: UIChart, selector: "p-chart", inputs: { type: "type", plugins: "plugins", width: "width", height: "height", responsive: "responsive", data: "data", options: "options" }, outputs: { onDataSelect: "onDataSelect" }, host: { classAttribute: "p-element" }, ngImport: i0, template: `
         <div style="position:relative" [style.width]="responsive && !width ? null : width" [style.height]="responsive && !height ? null : height">
             <canvas [attr.width]="responsive && !width ? null : width" [attr.height]="responsive && !height ? null : height" (click)="onCanvasClick($event)"></canvas>
@@ -103,7 +106,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.7", ngImpor
                         'class': 'p-element'
                     }
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }]; }, propDecorators: { type: [{
+        }], ctorParameters: function () {
+        return [{ type: i0.ElementRef }, { type: undefined, decorators: [{
+                        type: Inject,
+                        args: [PLATFORM_ID]
+                    }] }];
+    }, propDecorators: { type: [{
                 type: Input
             }], plugins: [{
                 type: Input

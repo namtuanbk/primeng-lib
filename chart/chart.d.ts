@@ -3,6 +3,7 @@ import * as i0 from "@angular/core";
 import * as i1 from "@angular/common";
 export declare class UIChart implements AfterViewInit, OnDestroy {
     el: ElementRef;
+    private platformId;
     type: string;
     plugins: any[];
     width: string;
@@ -13,7 +14,7 @@ export declare class UIChart implements AfterViewInit, OnDestroy {
     _data: any;
     _options: any;
     chart: any;
-    constructor(el: ElementRef);
+    constructor(el: ElementRef, platformId: any);
     get data(): any;
     set data(val: any);
     get options(): any;
