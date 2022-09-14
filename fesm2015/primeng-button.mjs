@@ -1,36 +1,39 @@
 import * as i0 from '@angular/core';
-import { Directive, Input, EventEmitter, Component, ChangeDetectionStrategy, ViewEncapsulation, ContentChildren, Output, NgModule } from '@angular/core';
+import { PLATFORM_ID, Directive, Inject, Input, EventEmitter, Component, ChangeDetectionStrategy, ViewEncapsulation, ContentChildren, Output, NgModule } from '@angular/core';
 import { DomHandler } from 'primeng/dom';
 import * as i1 from '@angular/common';
-import { CommonModule } from '@angular/common';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
 import * as i2 from 'primeng/ripple';
 import { RippleModule } from 'primeng/ripple';
 import { PrimeTemplate } from 'primeng/api';
 
 class ButtonDirective {
-    constructor(el) {
+    constructor(el, platformId) {
         this.el = el;
+        this.platformId = platformId;
         this.iconPos = 'left';
         this.loadingIcon = "pi pi-spinner pi-spin";
         this._loading = false;
     }
     ngAfterViewInit() {
-        this._initialStyleClass = this.el.nativeElement.className;
-        DomHandler.addMultipleClasses(this.el.nativeElement, this.getStyleClass());
-        if (this.icon || this.loading) {
-            this.createIconEl();
+        if (isPlatformBrowser(this.platformId)) {
+            this._initialStyleClass = this.el.nativeElement.className;
+            DomHandler.addMultipleClasses(this.el.nativeElement, this.getStyleClass());
+            if (this.icon || this.loading) {
+                this.createIconEl();
+            }
+            let labelElement = document.createElement("span");
+            if (this.icon && !this.label) {
+                labelElement.setAttribute('aria-hidden', 'true');
+            }
+            labelElement.className = 'p-button-label';
+            if (this.label)
+                labelElement.appendChild(document.createTextNode(this.label));
+            else
+                labelElement.innerHTML = '&nbsp;';
+            this.el.nativeElement.appendChild(labelElement);
+            this.initialized = true;
         }
-        let labelElement = document.createElement("span");
-        if (this.icon && !this.label) {
-            labelElement.setAttribute('aria-hidden', 'true');
-        }
-        labelElement.className = 'p-button-label';
-        if (this.label)
-            labelElement.appendChild(document.createTextNode(this.label));
-        else
-            labelElement.innerHTML = '&nbsp;';
-        this.el.nativeElement.appendChild(labelElement);
-        this.initialized = true;
     }
     getStyleClass() {
         let styleClass = 'p-button p-component';
@@ -125,7 +128,7 @@ class ButtonDirective {
         this.initialized = false;
     }
 }
-ButtonDirective.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.7", ngImport: i0, type: ButtonDirective, deps: [{ token: i0.ElementRef }], target: i0.ɵɵFactoryTarget.Directive });
+ButtonDirective.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "14.0.7", ngImport: i0, type: ButtonDirective, deps: [{ token: i0.ElementRef }, { token: PLATFORM_ID }], target: i0.ɵɵFactoryTarget.Directive });
 ButtonDirective.ɵdir = i0.ɵɵngDeclareDirective({ minVersion: "14.0.0", version: "14.0.7", type: ButtonDirective, selector: "[pButton]", inputs: { iconPos: "iconPos", loadingIcon: "loadingIcon", label: "label", icon: "icon", loading: "loading" }, host: { classAttribute: "p-element" }, ngImport: i0 });
 i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.7", ngImport: i0, type: ButtonDirective, decorators: [{
             type: Directive,
@@ -135,7 +138,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "14.0.7", ngImpor
                         'class': 'p-element'
                     }
                 }]
-        }], ctorParameters: function () { return [{ type: i0.ElementRef }]; }, propDecorators: { iconPos: [{
+        }], ctorParameters: function () {
+        return [{ type: i0.ElementRef }, { type: undefined, decorators: [{
+                        type: Inject,
+                        args: [PLATFORM_ID]
+                    }] }];
+    }, propDecorators: { iconPos: [{
                 type: Input
             }], loadingIcon: [{
                 type: Input
