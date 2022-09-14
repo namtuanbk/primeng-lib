@@ -27,10 +27,8 @@ class UIChart {
         this.reinit();
     }
     ngAfterViewInit() {
-        if (isPlatformBrowser(this.platformId)) {
-            this.initChart();
-            this.initialized = true;
-        }
+        this.initChart();
+        this.initialized = true;
     }
     onCanvasClick(event) {
         if (this.chart) {
@@ -48,12 +46,14 @@ class UIChart {
         if (opts.responsive && (this.height || this.width)) {
             opts.maintainAspectRatio = false;
         }
-        this.chart = new Chart(this.el.nativeElement.children[0].children[0], {
-            type: this.type,
-            data: this.data,
-            options: this.options,
-            plugins: this.plugins
-        });
+        if (isPlatformBrowser(this.platformId)) {
+            this.chart = new Chart(this.el.nativeElement.children[0].children[0], {
+                type: this.type,
+                data: this.data,
+                options: this.options,
+                plugins: this.plugins
+            });
+        }
     }
     getCanvas() {
         return this.el.nativeElement.children[0].children[0];
